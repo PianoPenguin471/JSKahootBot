@@ -11,12 +11,9 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            display: inline-block;
         }
         div {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            display: inline-block;
         }
         p {
             overflow-x: auto;
@@ -35,11 +32,12 @@
         <p id="answerDisplay"></p>
     </div>
     <script>
+        alert(document.domain)
         var answers = []
         var questionNum = 0
         function getAnswers() {
             var id = document.getElementById("quizId").value
-            fetch("http://penguinboi.local/getAnswers/" + id).then((val) => val.json().then(json=>parseJson(json)))
+            fetch("http://" + document.domain + "/getAnswers/" + id).then((val) => val.json().then(json=>parseJson(json)))
         }
         function parseJson(json) {
             console.log(json)
@@ -72,7 +70,7 @@
             let answer = answers[questionNum]
 
             if (answer == null) displayText = "No need to click anything for question #" + (questionNum + 1)
-            else displayText = `Correct answers for question #${questionNum + 1} are ${answerToString(answer)}`
+            else displayText = `Correct answers for question #${questionNum + 1}: ${answerToString(answer)}`
         
             document.getElementById("answerDisplay").innerHTML = displayText
         }
