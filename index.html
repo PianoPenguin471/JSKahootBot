@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahoot Bot</title>
+    <style>
+        body {
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            display: inline-block;
+        }
+        div {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        p {
+            overflow-x: auto;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="quizId" placeholder="Quiz id here:">
+    <button onclick="getAnswers()">Go</button>
+    <br>
+    <button onclick="prev()">Previous</button>
+    <button onclick="next()">Next</button>
+    <br>
+    <div>
+        <p id="answerDisplay"></p>
+    </div>
+    <script>
+        var answers = []
+        var questionNum = 0
+        function getAnswers() {
+            var id = document.getElementById("quizId").value
+            fetch("http://penguinboi.local/getAnswers/" + id).then((val) => val.json().then(json=>parseJson(json)))
+        }
+        function parseJson(json) {
+            console.log(json)
+            let title = json.title
+            let creatorName = json.creator_username
+            answers = json.answers
+            questionNum = 0
+            displayAnswer()
+        }
+        function next() {
+            questionNum++
+            if (questionNum > answers.length - 1) questionNum = 0
+            displayAnswer()
+        }
+        function prev() {
+            questionNum--
+            if (questionNum < 0) questionNum = answers.length
+            displayAnswer()
+        }
+        function answerToString(answer) {
+            let stringAnswer = answer.join('')
+            stringAnswer = stringAnswer.replace("red", "<p>&#128997;</p>")
+            stringAnswer = stringAnswer.replace("yellow", "<p>&#129000;</p>")
+            stringAnswer = stringAnswer.replace("blue", "<p>&#x1F7E6;</p>")
+            stringAnswer = stringAnswer.replace("green", "<p>&#x1F7E9;</p>")
+            return stringAnswer
+        }
+        function displayAnswer() {
+            let displayText = ""
+            let answer = answers[questionNum]
+
+            if (answer == null) displayText = "No need to click anything for question #" + (questionNum + 1)
+            else displayText = `Correct answers for question #${questionNum + 1} are ${answerToString(answer)}`
+        
+            document.getElementById("answerDisplay").innerHTML = displayText
+        }
+    </script>
+</body>
+</html>
